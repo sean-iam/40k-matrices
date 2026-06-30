@@ -141,7 +141,7 @@ details.notes summary::before{content:"⊕ ";color:var(--accent)} details.notes[
   <summary>Modelling &amp; assumptions — read before trusting a number</summary>
   <div class="notes-body">
     <ul>
-      <li><b>Empower (Power From Pain), per build:</b> A (Archon, Hatred Eternal) → re-roll Hits; B (Lady Malys, Poisoned Tongue) → Sustained 1 or Lethal (auto-picks higher, shown on card); C (Lelith, Brides of Death) → <b>+1 Strength and +1 AP</b> to the whole unit. A &amp; B also get Incubi <b>Decapitating Strikes</b> (Devastating vs INFANTRY only).</li>
+      <li><b>Empower applies BOTH Pain abilities</b> (leader + bodyguard) — all are in the math, the card just abbreviates: <b>A</b> = Hatred Eternal (re-roll Hits, Archon) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>B</b> = Poisoned Tongue (Sustained 1 or Lethal, auto-picked, Lady Malys) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>C</b> = Brides of Death (+1 Strength &amp; +1 AP, Lelith) + Acrobatic Gladiators (Wyches — charge after Advance/Fall Back; mobility only, no damage, so nothing to add). Devastating shows on the card only vs INFANTRY, where it applies.</li>
       <li><b>Exhibition of Slaughter (build C):</b> Exacting Cruelty gives Wych Cult melee <b>Lethal Hits vs non-Monster/Vehicle</b> (i.e. vs Marines/Terminators, always). For vehicles you need <b>Planned Strikes (1CP)</b> → Lethal vs anything. No damage enhancements in the detachment.</li>
       <li><b>Lelith's blades:</b> A8, <b>Anti-Infantry 2+</b> (wounds infantry on 2+), <b>Sustained Hits 2</b>, Precision. Hekatrix on gladiatorial weapons (A5 S4 AP-2); 9 Wyches on Hekatarii blades (A4 S3 AP-1 D1).</li>
       <li><b>Archon Soul Trap</b> baked in (huskblade A5/S4); on-kill ramp and Lelith's Precision (character sniping) not modelled — they don't change these target numbers.</li>
@@ -235,10 +235,10 @@ function scenario(ld,tgt){
   if(ld==='B' && S.empowered){
     const o1=buildOpts('B',tgt);o1.pactSus=true; const sus=run(o1);
     const o2=buildOpts('B',tgt);o2.pactLeth=true; const leth=run(o2);
-    const pick=leth.total>sus.total?leth:sus; pick.mode='Empower: '+(leth.total>sus.total?'LETHAL':'SUSTAINED'); return pick;
+    const pick=leth.total>sus.total?leth:sus; pick.mode='Empower: '+(leth.total>sus.total?'LETHAL':'SUSTAINED')+(tgt.type==='inf'?' + Devastating':''); return pick;
   }
   const r=run(buildOpts(ld,tgt));
-  if(ld==='A') r.mode=S.empowered?'Empower: re-roll hits':'not empowered';
+  if(ld==='A') r.mode=S.empowered?('Empower: re-roll hits'+(tgt.type==='inf'?' + Devastating':'')):'not empowered';
   else if(ld==='B') r.mode=S.empowered?'Empower: SUS/LETH':'not empowered';
   else r.mode=(S.empowered?'Empower: +1 S/AP':'not empowered')+(tgt.type==='veh'?(S.planned?' · Planned Strikes':' · no Lethal'):' · Lethal(inf)');
   return r;
