@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Drukhari Melee Matrix · Incubi vs Wyches</title>
+<title>Drukhari Melee Matrix · Incubi · Wyches · Drazhar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
   --edge:rgba(120,210,160,0.14); --edge-2:rgba(120,210,160,0.28);
   --accent:#54d6a0; --accent-glow:rgba(84,214,160,0.42);
   --best:#6fe0b0; --best-glow:rgba(111,224,176,0.35);
-  --warn:#e8a23c; --A:#54d6a0; --B:#b57cf0; --C:#e8a23c;
+  --warn:#e8a23c; --A:#54d6a0; --B:#b57cf0; --C:#e8a23c; --D:#5cb8e8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Chakra Petch',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.45;
@@ -59,14 +59,16 @@ h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:.01em;line-heig
 .tab .t-stat{font-family:'Spline Sans Mono';font-size:11px;color:var(--ink-dim);margin-top:3px}
 .tab.active .t-name{color:var(--accent)}
 .dnote{font-size:11.5px;color:var(--warn);margin:0 2px 14px;min-height:14px;line-height:1.5}
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:8px}
-@media(max-width:880px){.summary{grid-template-columns:1fr}}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:8px}
+@media(max-width:980px){.summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.summary{grid-template-columns:1fr}}
 .scard{padding:18px;border-radius:14px;background:var(--glass);border:1px solid var(--edge);position:relative;transition:all .18s;overflow:hidden}
 .scard:hover{transform:translateY(-2px)}
 .scard .vchip{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;margin-bottom:6px}
 .scard.va .vchip{background:rgba(84,214,160,.14);color:var(--A);border:1px solid rgba(84,214,160,.3)}
 .scard.vb .vchip{background:rgba(181,124,240,.14);color:var(--B);border:1px solid rgba(181,124,240,.3)}
 .scard.vc .vchip{background:rgba(232,162,60,.14);color:var(--C);border:1px solid rgba(232,162,60,.3)}
+.scard.vd .vchip{background:rgba(92,184,232,.14);color:var(--D);border:1px solid rgba(92,184,232,.3)}
 .scard .det{font-size:10px;color:var(--ink-faint);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
 .scard .big{font-family:'Spline Sans Mono';font-weight:700;font-size:36px;line-height:1;margin:4px 0 2px;color:#fff}
 .scard .unit{font-size:11.5px;color:var(--ink-dim)}
@@ -76,12 +78,13 @@ h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:.01em;line-heig
 .scard.winner .big{color:var(--best)}
 .scard .meter{height:4px;border-radius:3px;background:rgba(255,255,255,.07);margin-top:12px;overflow:hidden}
 .scard .meter i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--C));transition:width .4s}
-.bd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
-@media(max-width:880px){.bd-grid{grid-template-columns:1fr}}
+.bd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+@media(max-width:980px){.bd-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.bd-grid{grid-template-columns:1fr}}
 .bd{padding:15px 15px 9px}
 .bd-title{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
 .bd-title .v{font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase}
-.bd .v.va{color:var(--A)} .bd .v.vb{color:var(--B)} .bd .v.vc{color:var(--C)}
+.bd .v.va{color:var(--A)} .bd .v.vb{color:var(--B)} .bd .v.vc{color:var(--C)} .bd .v.vd{color:var(--D)}
 .bd-title .vd{font-size:10.5px;color:var(--ink-faint)}
 .bd-hint{font-size:10px;color:var(--ink-faint);margin:2px 0 4px}
 table{width:100%;border-collapse:collapse;margin-top:6px}
@@ -116,14 +119,14 @@ details.notes summary::before{content:"⊕ ";color:var(--accent)} details.notes[
 <header>
   <div class="eyebrow">Drukhari · Melee · Power From Pain</div>
   <h1>Drukhari Melee Matrix</h1>
-  <p class="sub">Three melee bricks, one army running <b>both</b> detachments (11e). <b>A</b> = 10 Incubi + Archon · <b>B</b> = 5 Incubi + Lady Malys · <b>C</b> = 10 Wyches + Lelith. Everyone gets <b>Skysplinter Assault</b> (Lance on disembark+charge, all Drukhari) and <b>Exhibition of Slaughter</b> (Lethal Hits, Wych Cult only). Infantry = models killed (overkill wasted); vehicles = wounds dealt. Melee only — pistols excluded.</p>
+  <p class="sub">Four melee bricks, one army running <b>both</b> detachments (11e). <b>A</b> = 10 Incubi + Archon · <b>B</b> = 5 Incubi + Lady Malys · <b>C</b> = 10 Wyches + Lelith · <b>D</b> = 5 Incubi + Drazhar. Everyone gets <b>Skysplinter Assault</b> (Lance on disembark+charge, all Drukhari) and <b>Exhibition of Slaughter</b> (Lethal Hits, Wych Cult only). Infantry = models killed (overkill wasted); vehicles = wounds dealt. Melee only — pistols excluded.</p>
 </header>
 
 <div class="panel ctl-group">
   <div class="ctl-head"><span class="ctl-dot"></span><div><div class="ctl-title">Conditions</div><div class="ctl-sub">tags show which builds a toggle affects</div></div></div>
   <div class="tgrid">
-    <div class="tog" data-t="empowered"><div class="lbl">Empowered <em class="em-all">all</em><small>1 Pain token · A:re-roll hits · B:sus/lethal · C:+1 S &amp; AP</small></div><div class="switch"></div></div>
-    <div class="tog" data-t="tormentors"><div class="lbl">Target Battle-shocked <em class="em-ab">A·B</em><small>Incubi Tormentors: +1 to hit</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="empowered"><div class="lbl">Empowered <em class="em-all">all</em><small>1 Pain token · A:re-roll hits · B:sus/lethal · C:+1 S &amp; AP · D:+1 wound</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="tormentors"><div class="lbl">Target Battle-shocked <em class="em-ab">A·B·D</em><small>Incubi Tormentors: +1 to hit</small></div><div class="switch"></div></div>
     <div class="tog" data-t="lance"><div class="lbl">Disembarked + charged <em class="em-all">all</em><small>Skysplinter Rain of Cruelty: Lance (+1 wound) — every Drukhari unit</small></div><div class="switch"></div></div>
     <div class="tog" data-t="planned"><div class="lbl">Planned Strikes (1CP) <em class="em-c">C</em><small>Wych Lethal Hits vs ANY target (else inf only)</small></div><div class="switch"></div></div>
     <div class="tog" data-t="thrilling"><div class="lbl">Thrilling Spectacle <em class="em-c">C</em><small>Lelith → 12 attacks (once/game)</small></div><div class="switch"></div></div>
@@ -141,18 +144,20 @@ details.notes summary::before{content:"⊕ ";color:var(--accent)} details.notes[
   <summary>Modelling &amp; assumptions — read before trusting a number</summary>
   <div class="notes-body">
     <ul>
-      <li><b>Empower applies BOTH Pain abilities</b> (leader + bodyguard) — all are in the math, the card just abbreviates: <b>A</b> = Hatred Eternal (re-roll Hits, Archon) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>B</b> = Poisoned Tongue (Sustained 1 or Lethal, auto-picked, Lady Malys) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>C</b> = Brides of Death (+1 Strength &amp; +1 AP, Lelith) + Acrobatic Gladiators (Wyches — charge after Advance/Fall Back; mobility only, no damage, so nothing to add). Devastating shows on the card only vs INFANTRY, where it applies.</li>
+      <li><b>Empower applies BOTH Pain abilities</b> (leader + bodyguard) — all are in the math, the card just abbreviates: <b>A</b> = Hatred Eternal (re-roll Hits, Archon) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>B</b> = Poisoned Tongue (Sustained 1 or Lethal, auto-picked, Lady Malys) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>C</b> = Brides of Death (+1 Strength &amp; +1 AP, Lelith) + Acrobatic Gladiators (Wyches — charge after Advance/Fall Back; mobility only, no damage, so nothing to add). <b>D</b> = Master of Blades (+1 to the Wound roll, whole unit, Drazhar) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). Devastating shows on the card only vs INFANTRY, where it applies.</li>
+      <li><b>Build D — Drazhar + 5 Incubi:</b> the 5 Incubi are the same brick as build B (4 klaives A3 S5 AP-2 D2 + 1 Klaivex single demiklaive A4). Drazhar's <b>Executioner's demiklaives have native Devastating Wounds on both profiles</b>, so he keeps mortal-wound output even into vehicles. Two <b class="flag">mutually-exclusive</b> profiles — pick ONE per fight (don't read both totals at once): <b>single blade</b> A6 S6 AP-2 D3 (default on; better into elites/vehicles) vs <b>dual blades</b> A8 S5 AP-2 D2 (toggle on, dual off; better into hordes). His empower is the only one that buffs <b>wounding</b> for the whole unit, so it doesn't stack with Lance's +1 wound (both cap at +1).</li>
+      <li><b class="flag">Drazhar's Silent Executioner is NOT modelled</b> (re-roll Hits vs any unit below Starting Strength, plus re-roll Wounds vs Below Half-strength). The matrix targets are full-strength, so it never fires on the alpha strike — but on follow-up turns into a chewed-up unit it's a large hidden upside for build D. Onslaught (6" pile-in/consolidate) is mobility only, no damage.</li>
       <li><b>Exhibition of Slaughter (build C):</b> Exacting Cruelty gives Wych Cult melee <b>Lethal Hits vs non-Monster/Vehicle</b> (i.e. vs Marines/Terminators, always). For vehicles you need <b>Planned Strikes (1CP)</b> → Lethal vs anything. No damage enhancements in the detachment.</li>
       <li><b>Lelith's blades:</b> A8, <b>Anti-Infantry 2+</b> (wounds infantry on 2+), <b>Sustained Hits 2</b>, Precision. Hekatrix on gladiatorial weapons (A5 S4 AP-2); 9 Wyches on Hekatarii blades (A4 S3 AP-1 D1).</li>
       <li><b>Archon Soul Trap</b> baked in (huskblade A5/S4); on-kill ramp and Lelith's Precision (character sniping) not modelled — they don't change these target numbers.</li>
-      <li><b>11e multi-detachment:</b> the army runs <b>both</b> Skysplinter Assault + Exhibition of Slaughter, and every unit uses both — limited by keyword. <b>Lance</b> (+1 wound on disembark+charge) = <b>all Drukhari</b> (A/B/C). <b>Exacting Cruelty / Planned Strikes</b> (Lethal) = Wych Cult only (C). <b>Tormentors</b> (+1 hit vs Battle-shocked) = Incubi only (A/B). Skysplinter's stratagems are ranged/movement/defensive, so they add no melee-damage lever.</li>
+      <li><b>11e multi-detachment:</b> the army runs <b>both</b> Skysplinter Assault + Exhibition of Slaughter, and every unit uses both — limited by keyword. <b>Lance</b> (+1 wound on disembark+charge) = <b>all Drukhari</b> (A/B/C). <b>Exacting Cruelty / Planned Strikes</b> (Lethal) = Wych Cult only (C). <b>Tormentors</b> (+1 hit vs Battle-shocked) = Incubi units (A/B/D). Skysplinter's stratagems are ranged/movement/defensive, so they add no melee-damage lever.</li>
       <li><b>Devastating</b> = mortal wounds, bypass saves. <b>Overkill</b> wasted on infantry (capped at unit size); vehicles show raw expected wounds + ONE-ROUNDS at ≥ W. Hit/wound modifiers cap at ±1; re-rolls stack on top. <b>Cover</b> is ranged-only, inert here.</li>
       <li><b class="flag">Confirm:</b> that Lelith can lead Wyches and Lady Malys can lead Incubi in your lists — the math holds either way, but those are the legality points I didn't verify.</li>
     </ul>
   </div>
 </details>
 
-<div class="foot">Incubi/Wyches WS3+ · Archon/Lady Malys/Lelith WS2+ · live recompute on every change</div>
+<div class="foot">Incubi/Wyches WS3+ · Archon/Lady Malys/Lelith/Drazhar WS2+ · live recompute on every change</div>
 </div>
 
 <script>
@@ -170,6 +175,11 @@ const LOADOUTS = {
     {name:'Hekatarii blades ×9',baseA:36, skill:3, melee:true, S:3, ap:-1, avgD:1, flatD:1},
     {name:'Hekatrix glaives',   baseA:5,  skill:3, melee:true, S:4, ap:-2, avgD:1, flatD:1},
     {name:"Lelith's blades",    baseA:8,  skill:2, melee:true, S:3, ap:-2, avgD:1, flatD:1, antiInf:2, natSus:2, lelith:true}]},
+  D:{desc:'5 Incubi + Drazhar', det:'Skysplinter Assault', weapons:[
+    {name:'Incubi klaives ×4',      baseA:12, skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
+    {name:'Klaivex demiklaive',     baseA:4,  skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
+    {name:'Drazhar — single blade', baseA:6,  skill:2, melee:true, S:6, ap:-2, avgD:3, flatD:3, dev:true},
+    {name:'Drazhar — dual blades',  baseA:8,  skill:2, melee:true, S:5, ap:-2, avgD:2, flatD:2, dev:true}]},
 };
 const TARGETS = [
   {key:'marines', name:'Marines',     T:4,  save:3, inv:null, W:2,  models:10, type:'inf', stat:'T4 · 3+ · W2 · ×10'},
@@ -178,7 +188,7 @@ const TARGETS = [
   {key:'tank',    name:'Heavy Tank',  T:12, save:2, inv:4,    W:20, models:1,  type:'veh', stat:'T12 · 2+/4++ · W20'},
 ];
 const S = {target:'marines', empowered:true, tormentors:true, lance:true, planned:false, thrilling:false, cover:false,
-  wpn:{A:[true,true,true], B:[true,true,true], C:[true,true,true]}};
+  wpn:{A:[true,true,true], B:[true,true,true], C:[true,true,true], D:[true,true,true,false]}};
 /* ═══ END EDIT ZONE — validated engine below ═══ */
 
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
@@ -225,6 +235,7 @@ function buildOpts(ld,tgt){
   if(ld==='A'){ base.warp=S.tormentors; base.plus1w=S.lance; base.rrh=emp; base.devVsInf=emp; }
   else if(ld==='B'){ base.warp=S.tormentors; base.plus1w=S.lance; base.devVsInf=emp; } // sus/lethal set in scenario
   else if(ld==='C'){ base.plus1w=S.lance; if(emp){base.plusS=1; base.plus1ap=true;} base.pactLeth=(tgt.type==='inf')||S.planned; }
+  else if(ld==='D'){ base.warp=S.tormentors; base.plus1w=(S.lance||emp); base.devVsInf=emp; } // Drazhar empower = +1 wound (caps with Lance); Incubi Decapitating Strikes = dev vs inf; Drazhar weapons have native dev
   return base;
 }
 function scenario(ld,tgt){
@@ -240,6 +251,7 @@ function scenario(ld,tgt){
   const r=run(buildOpts(ld,tgt));
   if(ld==='A') r.mode=S.empowered?('Empower: re-roll hits'+(tgt.type==='inf'?' + Devastating':'')):'not empowered';
   else if(ld==='B') r.mode=S.empowered?'Empower: SUS/LETH':'not empowered';
+  else if(ld==='D') r.mode=(S.empowered?('Empower: +1 wound'+(tgt.type==='inf'?' + Devastating':'')):'not empowered')+' · Drazhar dev';
   else r.mode=(S.empowered?'Empower: +1 S/AP':'not empowered')+(tgt.type==='veh'?(S.planned?' · Planned Strikes':' · no Lethal'):' · Lethal(inf)');
   return r;
 }
@@ -253,15 +265,16 @@ function render(){
   document.getElementById('tgt-name').textContent=tgt.name+' ('+tgt.stat+')';
   document.getElementById('tabs').innerHTML=TARGETS.map(t=>`<div class="tab ${t.key===S.target?'active':''}" data-tab="${t.key}"><div class="t-name">${t.name}</div><div class="t-stat">${t.stat}</div></div>`).join('');
   document.getElementById('dnote').textContent = tgt.type==='inf'
-    ? 'INFANTRY target: Incubi Decapitating Strikes → Devastating (A/B, if Empowered); Wych Exacting Cruelty → Lethal Hits (C, always).'
-    : 'VEHICLE target: Decapitating Strikes & Exacting Cruelty do NOT apply. Wyches (C) only get Lethal here via Planned Strikes (1CP).';
-  const R={A:scenario('A',tgt),B:scenario('B',tgt),C:scenario('C',tgt)};
-  const maxT=Math.max(R.A.total,R.B.total,R.C.total), unit=tgt.type==='inf'?'killed / 10':'wounds';
-  const card=(cls,ld,sc)=>{const win=Math.abs(sc.total-maxT)<0.001&&maxT>0;const disp=tgt.type==='inf'?Math.min(sc.total,tgt.models):sc.total;
+    ? 'INFANTRY target: Incubi Decapitating Strikes → Devastating (A/B/D, if Empowered); Wych Exacting Cruelty → Lethal Hits (C, always); Drazhar (D) has native Devastating always.'
+    : 'VEHICLE target: Decapitating Strikes & Exacting Cruelty do NOT apply. Wyches (C) only get Lethal here via Planned Strikes (1CP); Drazhar (D) keeps native Devastating Wounds.';
+  const keys=Object.keys(LOADOUTS);
+  const R={}; keys.forEach(k=>R[k]=scenario(k,tgt));
+  const maxT=Math.max(...keys.map(k=>R[k].total)), unit=tgt.type==='inf'?'killed / '+tgt.models:'wounds';
+  const card=(ld,sc)=>{const cls='v'+ld.toLowerCase();const win=Math.abs(sc.total-maxT)<0.001&&maxT>0;const disp=tgt.type==='inf'?Math.min(sc.total,tgt.models):sc.total;
     return `<div class="scard ${cls} ${win?'winner':''}"><span class="vchip">${LOADOUTS[ld].desc}</span>
       <div class="big">${fmt(disp)}</div><div class="unit">${unit}${tgt.type==='inf'&&sc.total>tgt.models+0.05?' · overkill':''}</div>
       <div class="mode">${sc.mode}</div><div class="meter"><i style="width:${maxT>0?Math.min(100,sc.total/maxT*100):0}%"></i></div></div>`;};
-  document.getElementById('summary').innerHTML=card('va','A',R.A)+card('vb','B',R.B)+card('vc','C',R.C);
+  document.getElementById('summary').innerHTML=keys.map(k=>card(k,R[k])).join('');
   const bd=(ldKey,sc)=>{const ld=LOADOUTS[ldKey];let rows='';
     for(let i=0;i<ld.weapons.length;i++){const on=S.wpn[ldKey][i];const v=tgt.type==='inf'?sc.rows[i].kills:sc.rows[i].dmg;
       rows+=`<tr class="${on?'':'woff'}"><td class="l"><span class="wbox ${on?'on':''}" data-wpn="${ldKey}" data-i="${i}"></span>${ld.weapons[i].name}</td><td class="num">${metricCell(v,tgt)}</td></tr>`;}
@@ -269,7 +282,7 @@ function render(){
     return `<div class="panel bd"><div class="bd-title"><span class="v v${ldKey.toLowerCase()}">Build ${ldKey}</span><span class="vd">${ld.desc}</span></div>
       <div class="bd-hint">tap a weapon to include/exclude</div>
       <table><thead><tr><th class="l">Weapon</th><th>${tgt.type==='inf'?'Killed':'Wounds'}</th></tr></thead><tbody>${rows}</tbody></table></div>`;};
-  document.getElementById('breakdown').innerHTML=bd('A',R.A)+bd('B',R.B)+bd('C',R.C);
+  document.getElementById('breakdown').innerHTML=keys.map(k=>bd(k,R[k])).join('');
   document.querySelectorAll('.tog').forEach(el=>el.classList.toggle('on',!!S[el.dataset.t]));
 }
 document.addEventListener('click',e=>{
