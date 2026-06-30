@@ -45,7 +45,7 @@ h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:.01em;line-heig
 .tog .lbl{font-size:12.5px;color:var(--ink);font-weight:500}
 .tog .lbl small{display:block;font-size:10px;color:var(--ink-faint);font-weight:400;margin-top:1px}
 .tog .lbl em{font-style:normal;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:1px 5px;border-radius:4px;margin-left:4px}
-.em-ab{background:rgba(84,214,160,.16);color:var(--A)} .em-c{background:rgba(232,162,60,.16);color:var(--C)} .em-all{background:rgba(139,168,154,.18);color:var(--ink-dim)}
+.em-ab{background:rgba(84,214,160,.16);color:var(--A)} .em-c{background:rgba(232,162,60,.16);color:var(--C)} .em-all{background:rgba(139,168,154,.18);color:var(--ink-dim)} .em-d{background:rgba(92,184,232,.16);color:var(--D)}
 .switch{position:relative;width:38px;height:21px;border-radius:20px;background:rgba(120,160,140,.18);border:1px solid var(--edge-2);flex:none;transition:all .2s}
 .switch::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:var(--ink-dim);transition:all .2s}
 .tog.on .switch{background:linear-gradient(120deg,var(--accent),#2ea878);border-color:var(--accent);box-shadow:0 0 14px var(--accent-glow)}
@@ -131,6 +131,9 @@ details.notes summary::before{content:"⊕ ";color:var(--accent)} details.notes[
     <div class="tog" data-t="planned"><div class="lbl">Planned Strikes (1CP) <em class="em-c">C</em><small>Wych Lethal Hits vs ANY target (else inf only)</small></div><div class="switch"></div></div>
     <div class="tog" data-t="thrilling"><div class="lbl">Thrilling Spectacle <em class="em-c">C</em><small>Lelith → 12 attacks (once/game)</small></div><div class="switch"></div></div>
     <div class="tog" data-t="cover"><div class="lbl">Target in Cover <em class="em-all">all</em><small>−1 hit · ranged only → no effect (melee)</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="silentHit"><div class="lbl">Drazhar re-roll Hits <em class="em-d">D</em><small>Silent Executioner: target below Starting Strength (Drazhar only)</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="silentWound"><div class="lbl">Drazhar re-roll Wounds <em class="em-d">D</em><small>Silent Executioner: target Below Half-strength (Drazhar only)</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="shrine"><div class="lbl">Incubi Shrine token(s) <em class="em-ab">A·B·D</em><small>Auto-6 wound, once/game · ×2 in 10-Incubi, ×1 in 5-Incubi</small></div><div class="switch"></div></div>
   </div>
 </div>
 
@@ -146,7 +149,8 @@ details.notes summary::before{content:"⊕ ";color:var(--accent)} details.notes[
     <ul>
       <li><b>Empower applies BOTH Pain abilities</b> (leader + bodyguard) — all are in the math, the card just abbreviates: <b>A</b> = Hatred Eternal (re-roll Hits, Archon) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>B</b> = Poisoned Tongue (Sustained 1 or Lethal, auto-picked, Lady Malys) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). <b>C</b> = Brides of Death (+1 Strength &amp; +1 AP, Lelith) + Acrobatic Gladiators (Wyches — charge after Advance/Fall Back; mobility only, no damage, so nothing to add). <b>D</b> = Master of Blades (+1 to the Wound roll, whole unit, Drazhar) + Decapitating Strikes (Devastating vs INFANTRY, Incubi). Devastating shows on the card only vs INFANTRY, where it applies.</li>
       <li><b>Build D — Drazhar + 5 Incubi:</b> the 5 Incubi are the same brick as build B (4 klaives A3 S5 AP-2 D2 + 1 Klaivex single demiklaive A4). Drazhar's <b>Executioner's demiklaives have native Devastating Wounds on both profiles</b>, so he keeps mortal-wound output even into vehicles. Two <b class="flag">mutually-exclusive</b> profiles — pick ONE per fight (don't read both totals at once): <b>single blade</b> A6 S6 AP-2 D3 (default on; better into elites/vehicles) vs <b>dual blades</b> A8 S5 AP-2 D2 (toggle on, dual off; better into hordes). His empower is the only one that buffs <b>wounding</b> for the whole unit, so it doesn't stack with Lance's +1 wound (both cap at +1).</li>
-      <li><b class="flag">Drazhar's Silent Executioner is NOT modelled</b> (re-roll Hits vs any unit below Starting Strength, plus re-roll Wounds vs Below Half-strength). The matrix targets are full-strength, so it never fires on the alpha strike — but on follow-up turns into a chewed-up unit it's a large hidden upside for build D. Onslaught (6" pile-in/consolidate) is mobility only, no damage.</li>
+      <li><b>Drazhar's Silent Executioner — two toggles (Drazhar's blades only, not the Incubi):</b> <b>re-roll Hits</b> fires when the target is below its Starting Strength; <b>re-roll Wounds</b> is added on top when the target is Below Half-strength (in-game the wound re-roll always comes bundled with the hit re-roll — toggle both for the below-half case). Both are <b>off by default</b> because they depend on target state — the matrix targets start full-strength, so this is Drazhar's ceiling into an already-chewed-up unit, not his alpha strike. Onslaught (6" pile-in/consolidate) is mobility only, no damage.</li>
+      <li><b>Incubi Shrine token(s):</b> once per game per token you may change one <b>Klaivex or Incubi</b> (not the leader) Hit or Wound roll to an unmodified 6 — <b>×2</b> in a 10-Incubi unit (A), <b>×1</b> in a 5-Incubi unit (B/D), none for Wyches (C). Toggle <b>on</b> to count the wound use: one guaranteed critical wound on an Incubi klaive (S5 AP-2 D2), shown as its own <code>⬡ Shrine token</code> row. It's a <b>mortal wound vs INFANTRY when Empowered</b> (Decapitating Strikes → bypasses saves), otherwise a saveable wound. Additive once-per-game estimate (assumes you convert an otherwise-failed roll); the Hit-roll use isn't modelled separately.</li>
       <li><b>Exhibition of Slaughter (build C):</b> Exacting Cruelty gives Wych Cult melee <b>Lethal Hits vs non-Monster/Vehicle</b> (i.e. vs Marines/Terminators, always). For vehicles you need <b>Planned Strikes (1CP)</b> → Lethal vs anything. No damage enhancements in the detachment.</li>
       <li><b>Lelith's blades:</b> A8, <b>Anti-Infantry 2+</b> (wounds infantry on 2+), <b>Sustained Hits 2</b>, Precision. Hekatrix on gladiatorial weapons (A5 S4 AP-2); 9 Wyches on Hekatarii blades (A4 S3 AP-1 D1).</li>
       <li><b>Archon Soul Trap</b> baked in (huskblade A5/S4); on-kill ramp and Lelith's Precision (character sniping) not modelled — they don't change these target numbers.</li>
@@ -178,8 +182,8 @@ const LOADOUTS = {
   D:{desc:'5 Incubi + Drazhar', det:'Skysplinter Assault', weapons:[
     {name:'Incubi klaives ×4',      baseA:12, skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
     {name:'Klaivex demiklaive',     baseA:4,  skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
-    {name:'Drazhar — single blade', baseA:6,  skill:2, melee:true, S:6, ap:-2, avgD:3, flatD:3, dev:true},
-    {name:'Drazhar — dual blades',  baseA:8,  skill:2, melee:true, S:5, ap:-2, avgD:2, flatD:2, dev:true}]},
+    {name:'Drazhar — single blade', baseA:6,  skill:2, melee:true, S:6, ap:-2, avgD:3, flatD:3, dev:true, drazhar:true},
+    {name:'Drazhar — dual blades',  baseA:8,  skill:2, melee:true, S:5, ap:-2, avgD:2, flatD:2, dev:true, drazhar:true}]},
 };
 const TARGETS = [
   {key:'marines', name:'Marines',     T:4,  save:3, inv:null, W:2,  models:10, type:'inf', stat:'T4 · 3+ · W2 · ×10'},
@@ -188,6 +192,7 @@ const TARGETS = [
   {key:'tank',    name:'Heavy Tank',  T:12, save:2, inv:4,    W:20, models:1,  type:'veh', stat:'T12 · 2+/4++ · W20'},
 ];
 const S = {target:'marines', empowered:true, tormentors:true, lance:true, planned:false, thrilling:false, cover:false,
+  silentHit:false, silentWound:false, shrine:false,
   wpn:{A:[true,true,true], B:[true,true,true], C:[true,true,true], D:[true,true,true,false]}};
 /* ═══ END EDIT ZONE — validated engine below ═══ */
 
@@ -201,14 +206,14 @@ function calcWeapon(w, tgt, o){
   let pHit=(7-need)/6;
   const critThr=o.crit5?5:6;
   let pCrit=Math.min((7-critThr)/6,pHit);
-  if(o.rrh){const pf=1-pHit;pHit+=pf*pHit;pCrit+=pf*pCrit;}
+  if(o.rrh||w.rrHit){const pf=1-pHit;pHit+=pf*pHit;pCrit+=pf*pCrit;}
   const critHits=A*pCrit, normHits=A*pHit-critHits;
   const netW=clamp((o.plus1w?1:0),-1,1);
   let wneed=clamp(woundNeed(w.S+(o.plusS||0),tgt.T)-netW,2,6);
   let critWThr=6;
   if(w.antiInf && tgt.type==='inf'){ wneed=Math.min(wneed,w.antiInf); critWThr=w.antiInf; }
   let pW=(7-wneed)/6, pCW=(7-critWThr)/6;
-  const wrr = w.tl ? 'all' : o.woundRR;
+  const wrr = (w.tl||w.rrWound) ? 'all' : o.woundRR;
   if(wrr==='one'){pW+=(1/6)*pW;pCW+=(1/6)*pCW;} else if(wrr==='all'){const pf=1-pW;pW+=pf*pW;pCW+=pf*pCW;}
   pW=Math.min(pW,1);pCW=Math.min(pCW,pW);
   const ap=w.ap-(o.plus1ap?1:0);
@@ -230,6 +235,20 @@ function calcWeapon(w, tgt, o){
   }
   return {dmg,kills};
 }
+function shrineValue(ld,tgt){
+  // Incubi Shrine token: change one Klaivex/Incubi WOUND roll to an unmodified 6 (a critical wound).
+  // Tokens: 2 in a 10-Incubi unit (A), 1 in a 5-Incubi unit (B/D), 0 for Wyches (C). Leader's attacks don't qualify.
+  // Representative Incubi weapon S5 AP-2 D2. Crit wound = mortal (bypass save) only vs INFANTRY when Empowered (Decapitating Strikes).
+  const N=ld==='A'?2:1, D=2, ap=-2;
+  const o=buildOpts(ld,tgt);
+  const apEff=ap-(o.plus1ap?1:0);
+  let best=tgt.inv?Math.min(tgt.save-apEff,tgt.inv):tgt.save-apEff; best=Math.max(best,2);
+  const pFail=best<=6?1-(7-best)/6:1;
+  const dev=S.empowered && tgt.type==='inf';     // crit wound bypasses save vs infantry
+  const killFactor=D>=tgt.W?1:D/tgt.W;
+  const per = tgt.type==='inf' ? (dev?killFactor:pFail*killFactor) : (dev?D:D*pFail);
+  return {n:N, val:N*per};
+}
 function buildOpts(ld,tgt){
   const emp=S.empowered, base={warp:false,plus1w:false,cover:S.cover,bracketed:false,crit5:false,plus1ap:false,plusS:0,woundRR:'none',rrh:false,devVsInf:false,pactSus:false,pactLeth:false};
   if(ld==='A'){ base.warp=S.tormentors; base.plus1w=S.lance; base.rrh=emp; base.devVsInf=emp; }
@@ -241,18 +260,22 @@ function buildOpts(ld,tgt){
 function scenario(ld,tgt){
   let ws=LOADOUTS[ld].weapons;
   if(ld==='C' && S.thrilling) ws=ws.map(w=> w.lelith?{...w,baseA:12}:w);
+  if(ld==='D' && (S.silentHit||S.silentWound)) ws=ws.map(w=> w.drazhar?{...w,rrHit:S.silentHit,rrWound:S.silentWound}:w); // Silent Executioner: Drazhar's blades only
   const run=(o)=>{const rows=ws.map((w,i)=>({on:S.wpn[ld][i],...calcWeapon(w,tgt,o)}));
     return {rows,total:rows.reduce((a,r)=>a+(r.on?(tgt.type==='inf'?r.kills:r.dmg):0),0)};};
+  let r;
   if(ld==='B' && S.empowered){
     const o1=buildOpts('B',tgt);o1.pactSus=true; const sus=run(o1);
     const o2=buildOpts('B',tgt);o2.pactLeth=true; const leth=run(o2);
-    const pick=leth.total>sus.total?leth:sus; pick.mode='Empower: '+(leth.total>sus.total?'LETHAL':'SUSTAINED')+(tgt.type==='inf'?' + Devastating':''); return pick;
+    r=leth.total>sus.total?leth:sus; r.mode='Empower: '+(leth.total>sus.total?'LETHAL':'SUSTAINED')+(tgt.type==='inf'?' + Devastating':'');
+  } else {
+    r=run(buildOpts(ld,tgt));
+    if(ld==='A') r.mode=S.empowered?('Empower: re-roll hits'+(tgt.type==='inf'?' + Devastating':'')):'not empowered';
+    else if(ld==='B') r.mode=S.empowered?'Empower: SUS/LETH':'not empowered';
+    else if(ld==='D') r.mode=(S.empowered?('Empower: +1 wound'+(tgt.type==='inf'?' + Devastating':'')):'not empowered')+(S.silentHit||S.silentWound?' · SE re-roll':' · Drazhar dev');
+    else r.mode=(S.empowered?'Empower: +1 S/AP':'not empowered')+(tgt.type==='veh'?(S.planned?' · Planned Strikes':' · no Lethal'):' · Lethal(inf)');
   }
-  const r=run(buildOpts(ld,tgt));
-  if(ld==='A') r.mode=S.empowered?('Empower: re-roll hits'+(tgt.type==='inf'?' + Devastating':'')):'not empowered';
-  else if(ld==='B') r.mode=S.empowered?'Empower: SUS/LETH':'not empowered';
-  else if(ld==='D') r.mode=(S.empowered?('Empower: +1 wound'+(tgt.type==='inf'?' + Devastating':'')):'not empowered')+' · Drazhar dev';
-  else r.mode=(S.empowered?'Empower: +1 S/AP':'not empowered')+(tgt.type==='veh'?(S.planned?' · Planned Strikes':' · no Lethal'):' · Lethal(inf)');
+  if(S.shrine && (ld==='A'||ld==='B'||ld==='D')){ const sv=shrineValue(ld,tgt); r.shrineN=sv.n; r.shrineVal=sv.val; r.total+=sv.val; }
   return r;
 }
 const fmt=v=>v.toFixed(1);
@@ -278,6 +301,7 @@ function render(){
   const bd=(ldKey,sc)=>{const ld=LOADOUTS[ldKey];let rows='';
     for(let i=0;i<ld.weapons.length;i++){const on=S.wpn[ldKey][i];const v=tgt.type==='inf'?sc.rows[i].kills:sc.rows[i].dmg;
       rows+=`<tr class="${on?'':'woff'}"><td class="l"><span class="wbox ${on?'on':''}" data-wpn="${ldKey}" data-i="${i}"></span>${ld.weapons[i].name}</td><td class="num">${metricCell(v,tgt)}</td></tr>`;}
+    if(sc.shrineVal!=null) rows+=`<tr><td class="l" style="color:var(--accent)">⬡ Shrine token ×${sc.shrineN}<span class="tag">auto-6 wound → ${S.empowered&&tgt.type==='inf'?'mortal':'wound'}</span></td><td class="num">${fmt(sc.shrineVal)}</td></tr>`;
     rows+=`<tr class="total"><td class="l">All attacks</td><td class="num">${metricCell(sc.total,tgt)}</td></tr>`;
     return `<div class="panel bd"><div class="bd-title"><span class="v v${ldKey.toLowerCase()}">Build ${ldKey}</span><span class="vd">${ld.desc}</span></div>
       <div class="bd-hint">tap a weapon to include/exclude</div>
