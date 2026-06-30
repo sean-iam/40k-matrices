@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incubi Damage Matrix · Skysplinter Assault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e0c; --ink:#e8f4ee; --ink-dim:#8ba89a; --ink-faint:#5a6f63;
+  --glass:rgba(18,28,23,0.62); --glass-2:rgba(24,36,30,0.55);
+  --edge:rgba(120,210,160,0.14); --edge-2:rgba(120,210,160,0.28);
+  --accent:#54d6a0; --accent-glow:rgba(84,214,160,0.42);
+  --best:#6fe0b0; --best-glow:rgba(111,224,176,0.35);
+  --warn:#e8a23c; --A:#54d6a0; --B:#b57cf0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Chakra Petch',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.45;
+  background-image:
+    radial-gradient(900px 600px at 12% -5%, rgba(84,214,160,0.10), transparent 60%),
+    radial-gradient(800px 700px at 95% 0%, rgba(181,124,240,0.09), transparent 55%),
+    radial-gradient(1000px 900px at 50% 110%, rgba(84,214,160,0.06), transparent 60%);
+  background-attachment:fixed;}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 22px 90px}
+header{margin-bottom:20px}
+.eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+h1{font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:.01em;line-height:1.02;text-transform:uppercase}
+.sub{color:var(--ink-dim);font-size:13.5px;margin-top:10px;max-width:820px}
+.sub b{color:var(--accent);font-weight:600} .sub .v a{font-weight:600}
+.panel{background:var(--glass);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%);
+  border:1px solid var(--edge);border-radius:16px;box-shadow:0 18px 50px -22px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);}
+.section-label{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin:0 0 14px}
+.ctl-group{padding:18px;margin-bottom:22px}
+.ctl-head{display:flex;align-items:center;gap:9px;margin-bottom:15px}
+.ctl-dot{width:9px;height:9px;border-radius:2px;transform:rotate(45deg);flex:none;background:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
+.ctl-title{font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.ctl-sub{font-size:11px;color:var(--ink-faint)}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:880px){.tgrid{grid-template-columns:1fr 1fr}}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 11px;border-radius:10px;cursor:pointer;transition:background .16s;user-select:none;border:1px solid var(--edge)}
+.tog:hover{background:rgba(84,214,160,.06);border-color:var(--edge-2)}
+.tog .lbl{font-size:12.5px;color:var(--ink);font-weight:500}
+.tog .lbl small{display:block;font-size:10px;color:var(--ink-faint);font-weight:400;margin-top:1px}
+.switch{position:relative;width:38px;height:21px;border-radius:20px;background:rgba(120,160,140,.18);border:1px solid var(--edge-2);flex:none;transition:all .2s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:var(--ink-dim);transition:all .2s}
+.tog.on .switch{background:linear-gradient(120deg,var(--accent),#2ea878);border-color:var(--accent);box-shadow:0 0 14px var(--accent-glow)}
+.tog.on .switch::after{left:19px;background:#fff}
+.tog.on .lbl{color:#fff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{position:relative;flex:1;min-width:140px;padding:14px 16px;border-radius:13px;cursor:pointer;background:var(--glass-2);border:1px solid var(--edge);transition:all .18s;overflow:hidden}
+.tab:hover{border-color:var(--edge-2);box-shadow:0 0 22px -6px var(--accent-glow);transform:translateY(-1px)}
+.tab.active{border-color:var(--accent);box-shadow:0 0 26px -4px var(--accent-glow);background:rgba(26,40,33,.7)}
+.tab .t-name{font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase}
+.tab .t-stat{font-family:'Spline Sans Mono';font-size:11px;color:var(--ink-dim);margin-top:3px}
+.tab.active .t-name{color:var(--accent)}
+.dnote{font-size:11.5px;color:var(--warn);margin:0 2px 14px;min-height:14px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+@media(max-width:600px){.summary{grid-template-columns:1fr}}
+.scard{padding:18px;border-radius:14px;background:var(--glass);border:1px solid var(--edge);position:relative;transition:all .18s;overflow:hidden}
+.scard:hover{transform:translateY(-2px)}
+.scard .vchip{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;margin-bottom:9px}
+.scard.va .vchip{background:rgba(84,214,160,.14);color:var(--A);border:1px solid rgba(84,214,160,.3)}
+.scard.vb .vchip{background:rgba(181,124,240,.14);color:var(--B);border:1px solid rgba(181,124,240,.3)}
+.scard .big{font-family:'Spline Sans Mono';font-weight:700;font-size:40px;line-height:1;margin:7px 0 2px;color:#fff}
+.scard .unit{font-size:12px;color:var(--ink-dim)}
+.scard .mode{font-family:'Spline Sans Mono';font-size:10.5px;color:var(--ink-faint);margin-top:8px}
+.scard.winner{border-color:var(--best);box-shadow:0 0 30px -6px var(--best-glow)}
+.scard.winner::after{content:"▲ HIGHER";position:absolute;top:15px;right:15px;font-size:9px;letter-spacing:.12em;color:var(--best);font-weight:700}
+.scard.winner .big{color:var(--best)}
+.scard .meter{height:4px;border-radius:3px;background:rgba(255,255,255,.07);margin-top:13px;overflow:hidden}
+.scard .meter i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--B));transition:width .4s}
+.bd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:880px){.bd-grid{grid-template-columns:1fr}}
+.bd{padding:16px 16px 10px}
+.bd-title{display:flex;align-items:baseline;gap:9px;margin-bottom:2px}
+.bd-title .v{font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase}
+.bd .v.va{color:var(--A)} .bd .v.vb{color:var(--B)}
+.bd-title .vd{font-size:11px;color:var(--ink-faint)}
+.bd-hint{font-size:10.5px;color:var(--ink-faint);margin:2px 0 4px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;text-align:right;padding:7px 8px;border-bottom:1px solid var(--edge)}
+th.l{text-align:left}
+td{padding:9px 8px;font-size:13px;border-bottom:1px solid rgba(120,210,160,.07)}
+td.l{text-align:left;color:var(--ink-dim);font-weight:500}
+td.num{text-align:right;font-family:'Spline Sans Mono';font-weight:500;color:var(--ink)}
+.wbox{display:inline-block;width:15px;height:15px;border-radius:4px;border:1.5px solid var(--edge-2);margin-right:9px;vertical-align:-2px;cursor:pointer;transition:all .15s;position:relative}
+.wbox:hover{border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.wbox.on{background:linear-gradient(120deg,var(--accent),#2ea878);border-color:var(--accent)}
+.wbox.on::after{content:"✓";position:absolute;top:-3px;left:1px;font-size:12px;color:#fff;font-weight:700}
+tr.woff td{opacity:.34} tr.woff td.l{text-decoration:line-through} tr.woff .wbox{opacity:1}
+tr.total td{border-top:1px solid var(--edge-2);border-bottom:none;padding-top:11px}
+tr.total td.l{color:#fff;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:12px}
+tr.total td.num{font-weight:700;font-size:16px;color:#fff}
+td .tag{font-family:'Chakra Petch';font-size:9px;font-weight:600;letter-spacing:.05em;color:var(--ink-faint);display:block;margin-top:1px}
+details.notes{margin-top:24px}
+details.notes summary{cursor:pointer;padding:16px 18px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim);font-weight:600;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary::before{content:"⊕ ";color:var(--accent)} details.notes[open] summary::before{content:"⊖ "}
+.notes-body{padding:4px 22px 22px;font-size:12.5px;color:var(--ink-dim);line-height:1.7}
+.notes-body b{color:var(--ink)} .notes-body code{font-family:'Spline Sans Mono';font-size:11.5px;background:rgba(84,214,160,.1);padding:1px 6px;border-radius:4px;color:var(--accent)}
+.notes-body ul{margin:8px 0 8px 4px;list-style:none} .notes-body li{padding:3px 0 3px 18px;position:relative}
+.notes-body li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.flag{color:var(--warn)}
+.foot{margin-top:30px;text-align:center;font-size:11px;color:var(--ink-faint);letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Drukhari · Power From Pain · Melee</div>
+  <h1>Incubi Damage Matrix</h1>
+  <p class="sub"><b class="v">Build A</b> = 10 Incubi (Klaivex + 9) led by an <b>Archon</b>. <b class="v">Build B</b> = 5 Incubi (Klaivex + 4) led by <b>Lady Malys</b>. Both in <b>Skysplinter Assault</b>. Infantry = models killed (overkill wasted); vehicles = wounds dealt. Melee only — Archon's pistol excluded.</p>
+</header>
+
+<div class="panel ctl-group">
+  <div class="ctl-head"><span class="ctl-dot"></span><div><div class="ctl-title">Conditions</div><div class="ctl-sub">Skysplinter Assault has no melee-damage stratagem or enhancement (audited) — output is unit + leader + Power From Pain</div></div></div>
+  <div class="tgrid">
+    <div class="tog" data-t="empowered"><div class="lbl">Empowered <small>spend 1 Pain token</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="tormentors"><div class="lbl">Target Battle-shocked <small>Tormentors: +1 to hit</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="lance"><div class="lbl">Disembarked + charged <small>Rain of Cruelty: Lance (+1 wound)</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="cover"><div class="lbl">Target in Cover <small>−1 hit · ranged only → no effect (melee)</small></div><div class="switch"></div></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="dnote" id="dnote"></div>
+<div class="section-label">Damage · <span id="tgt-name"></span></div>
+<div class="summary" id="summary"></div>
+<div class="bd-grid" id="breakdown"></div>
+
+<details class="notes panel">
+  <summary>Modelling &amp; assumptions — read before trusting a number</summary>
+  <div class="notes-body">
+    <ul>
+      <li><b>Empower (Power From Pain):</b> spending 1 Pain token Empowers the unit. <b>Build A (Archon):</b> Hatred Eternal → <code>re-roll Hits</code>. <b>Build B (Lady Malys):</b> Poisoned Tongue → <code>Sustained 1</code> or <code>Lethal</code> (tool auto-picks the higher per target, shown on the card). Both also get <b>Decapitating Strikes</b>: vs INFANTRY only, every melee attack gains <b>Devastating Wounds</b> (= mortal wounds, bypass saves).</li>
+      <li><b>Archon Soul Trap</b> is baked in: huskblade shown at <code>A5 / S4</code> (base 4/3 +1/+1). The on-kill ramp is not modelled.</li>
+      <li><b>Tormentors</b> = +1 to <b>Hit</b> vs a Battle-shocked unit (Incubi force the test at fight start). Toggle = assume the target failed it.</li>
+      <li><b>Rain of Cruelty</b> (detachment): a unit that disembarked gets <b>Lance</b> on melee = +1 to Wound on a turn it charged. Toggle = disembarked and charged.</li>
+      <li><b>Klaivex</b> modelled with the single-blade demiklaive (A4 S5 AP-2 D2). Dual blades (A6 S4 AP-1 D1, twin-linked) are better into hordes — say the word and I'll swap or add it.</li>
+      <li><b>Devastating</b> native on Archon huskblade and Lady's Blade always (even vs vehicles). <b>Cover</b> is −1 hit, ranged only, so it's inert here. <b>Hazardous</b> on Lady's Blade (self-risk) isn't an output factor.</li>
+      <li><b>Overkill</b> wasted on infantry (capped at unit size); vehicles show raw expected wounds + ONE-ROUNDS at ≥ W. Hit/wound modifiers cap at ±1; re-rolls stack on top.</li>
+    </ul>
+  </div>
+</details>
+
+<div class="foot">Incubi WS3+ · Archon/Lady Malys WS2+ · klaive S5 AP-2 D2 · live recompute on every change</div>
+</div>
+
+<script>
+/* ═══ EDIT ZONE — Incubi eval data ═══ */
+const LOADOUTS = {
+  A:{desc:'10 Incubi · Klaivex + 9 · Archon', weapons:[
+    {name:'Incubi klaives ×9',   baseA:27, skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
+    {name:'Klaivex demiklaive',  baseA:4,  skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
+    {name:'Archon huskblade',    baseA:5,  skill:2, melee:true, S:4, ap:-2, avgD:3, flatD:3, dev:true}]},
+  B:{desc:'5 Incubi · Klaivex + 4 · Lady Malys', weapons:[
+    {name:'Incubi klaives ×4',   baseA:12, skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
+    {name:'Klaivex demiklaive',  baseA:4,  skill:3, melee:true, S:5, ap:-2, avgD:2, flatD:2},
+    {name:"Lady's Blade",        baseA:6,  skill:2, melee:true, S:5, ap:-3, avgD:3, flatD:3, dev:true}]},
+};
+const TARGETS = [
+  {key:'marines', name:'Marines',     T:4,  save:3, inv:null, W:2,  models:10, type:'inf', stat:'T4 · 3+ · W2 · ×10'},
+  {key:'terms',   name:'Terminators', T:5,  save:2, inv:4,    W:3,  models:10, type:'inf', stat:'T5 · 2+/4++ · W3 · ×10'},
+  {key:'veh',     name:'Vehicle',     T:11, save:3, inv:5,    W:14, models:1,  type:'veh', stat:'T11 · 3+/5++ · W14'},
+  {key:'tank',    name:'Heavy Tank',  T:12, save:2, inv:4,    W:20, models:1,  type:'veh', stat:'T12 · 2+/4++ · W20'},
+];
+const S = {target:'marines', empowered:true, tormentors:true, lance:true, cover:false, wpn:{A:[true,true,true],B:[true,true,true]}};
+/* ═══ END EDIT ZONE — validated engine below ═══ */
+
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+function woundNeed(Sx,T){ if(Sx>=2*T)return 2; if(Sx>T)return 3; if(Sx===T)return 4; if(Sx*2<=T)return 6; return 5; }
+function calcWeapon(w, tgt, o){
+  let A = w.baseA + (w.blast ? Math.floor(tgt.models/5) : 0);
+  const coverPen = (o.cover && !w.melee) ? 1 : 0;
+  const netHit = clamp((o.warp?1:0)-(o.bracketed?1:0)-coverPen,-1,1);
+  const need = clamp((w.skill||3)-netHit,2,6);
+  let pHit=(7-need)/6;
+  const critThr=o.crit5?5:6;
+  let pCrit=Math.min((7-critThr)/6,pHit);
+  if(o.rrh){const pf=1-pHit;pHit+=pf*pHit;pCrit+=pf*pCrit;}
+  const critHits=A*pCrit, normHits=A*pHit-critHits;
+  const netW=clamp((o.plus1w?1:0),-1,1);
+  const wneed=clamp(woundNeed(w.S,tgt.T)-netW,2,6);
+  let pW=(7-wneed)/6, pCW=1/6;
+  const wrr = w.tl ? 'all' : o.woundRR;
+  if(wrr==='one'){pW+=(1/6)*pW;pCW+=(1/6)*pCW;} else if(wrr==='all'){const pf=1-pW;pW+=pf*pW;pCW+=pf*pCW;}
+  pW=Math.min(pW,1);pCW=Math.min(pCW,pW);
+  const ap=w.ap-(o.plus1ap?1:0);
+  let best=tgt.inv?Math.min(tgt.save-ap,tgt.inv):tgt.save-ap; best=Math.max(best,2);
+  const pSave=best<=6?(7-best)/6:0, pFail=1-pSave;
+  const dev = !!w.dev || !!(o.devVsInf && tgt.type==='inf');
+  const normalW=dev?(pW-pCW):pW, critW=dev?pCW:0, ED=w.avgD;
+  const susX=Math.max(w.natSus||0,o.pactSus?1:0), lethal=!!o.pactLeth;
+  let su=0,mo=0; const rollers=normHits+critHits*susX;
+  su+=rollers*normalW*pFail; mo+=rollers*critW;
+  const rollDmg=normalW*pFail*ED+critW*ED, lethalDmg=pFail*ED;
+  if(lethal&&lethalDmg>rollDmg){su+=critHits*pFail;} else {su+=critHits*normalW*pFail;mo+=critHits*critW;}
+  const dmg=(su+mo)*ED;
+  let kills=0;
+  if(tgt.type==='inf'){
+    const Dk=w.variable?Math.round(w.avgD):w.flatD;
+    const ppk=Math.max(1,Math.ceil(tgt.W/Dk));
+    kills=su/ppk + ((w.flatD&&w.flatD>=tgt.W)?mo:mo*Math.min(1,(w.flatD||ED)/tgt.W));
+  }
+  return {dmg,kills};
+}
+function optsFor(ld){
+  const emp=S.empowered;
+  return {warp:S.tormentors, plus1w:S.lance, cover:S.cover, bracketed:false, crit5:false,
+    plus1ap:false, woundRR:'none', rrh:(emp&&ld==='A'), devVsInf:emp, pactSus:false, pactLeth:false};
+}
+function scenario(ld,tgt){
+  const ws=LOADOUTS[ld].weapons;
+  const run=(o)=>{const rows=ws.map((w,i)=>({on:S.wpn[ld][i],...calcWeapon(w,tgt,o)}));
+    return {rows,total:rows.reduce((a,r)=>a+(r.on?(tgt.type==='inf'?r.kills:r.dmg):0),0)};};
+  if(ld==='B'&&S.empowered){
+    const o1=optsFor('B');o1.pactSus=true; const sus=run(o1);
+    const o2=optsFor('B');o2.pactLeth=true; const leth=run(o2);
+    const pick = leth.total>sus.total?leth:sus; pick.mode='Empower: '+(leth.total>sus.total?'LETHAL':'SUSTAINED'); return pick;
+  }
+  const r=run(optsFor(ld));
+  r.mode = ld==='A' ? (S.empowered?'Empower: re-roll hits':'not empowered') : (S.empowered?'Empower: SUS/LETH':'not empowered');
+  return r;
+}
+const fmt=v=>v.toFixed(1);
+function metricCell(val,tgt){
+  if(tgt.type==='inf'){const c=Math.min(val,tgt.models);return `${fmt(c)}${val>tgt.models+0.05?'<span class="tag">+ overkill</span>':''}`;}
+  return `${fmt(val)}${val>=tgt.W?'<span class="tag" style="color:var(--best)">ONE-ROUNDS</span>':''}`;
+}
+function render(){
+  const tgt=TARGETS.find(t=>t.key===S.target);
+  document.getElementById('tgt-name').textContent=tgt.name+' ('+tgt.stat+')';
+  document.getElementById('tabs').innerHTML=TARGETS.map(t=>`<div class="tab ${t.key===S.target?'active':''}" data-tab="${t.key}"><div class="t-name">${t.name}</div><div class="t-stat">${t.stat}</div></div>`).join('');
+  document.getElementById('dnote').textContent = (S.empowered && tgt.type==='inf') ? 'Empowered + INFANTRY target → Decapitating Strikes gives every melee attack Devastating Wounds.' : (S.empowered ? 'Empowered, but target is not INFANTRY → Decapitating Strikes does not apply (only innate Devastating on the leader weapon).' : 'Not empowered → no re-roll / sus-lethal / Decapitating Strikes.');
+  const A=scenario('A',tgt), B=scenario('B',tgt);
+  const maxT=Math.max(A.total,B.total), unit=tgt.type==='inf'?'models killed / 10':'wounds dealt';
+  const card=(cls,ld,sc)=>{const win=Math.abs(sc.total-maxT)<0.001&&maxT>0;const disp=tgt.type==='inf'?Math.min(sc.total,tgt.models):sc.total;
+    return `<div class="scard ${cls} ${win?'winner':''}"><span class="vchip">${LOADOUTS[ld].desc}</span>
+      <div class="big">${fmt(disp)}</div><div class="unit">${unit}${tgt.type==='inf'&&sc.total>tgt.models+0.05?' · overkill':''}</div>
+      <div class="mode">${sc.mode}</div><div class="meter"><i style="width:${maxT>0?Math.min(100,sc.total/maxT*100):0}%"></i></div></div>`;};
+  document.getElementById('summary').innerHTML=card('va','A',A)+card('vb','B',B);
+  const bd=(ldKey,sc)=>{const ld=LOADOUTS[ldKey];let rows='';
+    for(let i=0;i<ld.weapons.length;i++){const on=S.wpn[ldKey][i];const v=tgt.type==='inf'?sc.rows[i].kills:sc.rows[i].dmg;
+      rows+=`<tr class="${on?'':'woff'}"><td class="l"><span class="wbox ${on?'on':''}" data-wpn="${ldKey}" data-i="${i}"></span>${ld.weapons[i].name}</td><td class="num">${metricCell(v,tgt)}</td></tr>`;}
+    rows+=`<tr class="total"><td class="l">All attacks</td><td class="num">${metricCell(sc.total,tgt)}<span class="tag">${sc.mode}</span></td></tr>`;
+    return `<div class="panel bd"><div class="bd-title"><span class="v v${ldKey.toLowerCase()}">Build ${ldKey}</span><span class="vd">${ld.desc}</span></div>
+      <div class="bd-hint">tap a weapon to include or exclude it</div>
+      <table><thead><tr><th class="l">Weapon</th><th>${tgt.type==='inf'?'Models killed':'Wounds'}</th></tr></thead><tbody>${rows}</tbody></table></div>`;};
+  document.getElementById('breakdown').innerHTML=bd('A',A)+bd('B',B);
+  document.querySelectorAll('.tog').forEach(el=>el.classList.toggle('on',!!S[el.dataset.t]));
+}
+document.addEventListener('click',e=>{
+  const wb=e.target.closest('.wbox'); if(wb){S.wpn[wb.dataset.wpn][+wb.dataset.i]=!S.wpn[wb.dataset.wpn][+wb.dataset.i];render();return;}
+  const tog=e.target.closest('.tog'); if(tog){S[tog.dataset.t]=!S[tog.dataset.t];render();return;}
+  const tab=e.target.closest('.tab'); if(tab){S.target=tab.dataset.tab;render();return;}
+});
+render();
+</script>
+</body>
+</html>

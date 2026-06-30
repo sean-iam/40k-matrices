@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defiler Damage Matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c10; --ink:#e8edf4; --ink-dim:#8b97a8; --ink-faint:#5a6575;
+  --glass:rgba(20,26,35,0.62); --glass-2:rgba(28,35,47,0.55);
+  --edge:rgba(120,160,210,0.14); --edge-2:rgba(120,160,210,0.28);
+  --sky:#46b8f0; --sky-glow:rgba(70,184,240,0.45);
+  --best:#5fd6a0; --best-glow:rgba(95,214,160,0.35);
+  --warn:#e8a23c; --chaos:#d65a8a; --chaos-2:#b8436f;
+  --A:#46b8f0; --B:#e8a23c;
+  --accent:var(--sky); --accent-glow:var(--sky-glow);
+}
+body.det-pb{--accent:var(--chaos); --accent-glow:rgba(214,90,138,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Chakra Petch',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.45;
+  background-image:
+    radial-gradient(900px 600px at 12% -5%, rgba(70,184,240,0.10), transparent 60%),
+    radial-gradient(800px 700px at 95% 0%, rgba(214,90,138,0.10), transparent 55%),
+    radial-gradient(1000px 900px at 50% 110%, rgba(95,214,160,0.06), transparent 60%),
+    radial-gradient(600px 500px at 80% 80%, rgba(232,162,60,0.05), transparent 60%);
+  background-attachment:fixed;}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 22px 90px}
+header{margin-bottom:22px}
+.eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:color .3s}
+.eyebrow::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,currentColor,transparent)}
+h1{font-size:clamp(28px,5vw,48px);font-weight:700;letter-spacing:.01em;line-height:1.02;text-transform:uppercase}
+.sub{color:var(--ink-dim);font-size:13.5px;margin-top:10px;max-width:780px}
+.sub b{color:var(--accent);font-weight:600;transition:color .3s} .sub .mel{color:var(--warn);font-weight:600}
+
+/* detachment master switch */
+.det-switch{display:flex;gap:6px;padding:6px;border-radius:15px;background:var(--glass);border:1px solid var(--edge);margin-bottom:22px;
+  backdrop-filter:blur(16px);box-shadow:0 18px 50px -22px rgba(0,0,0,.8)}
+.det-opt{flex:1;text-align:center;padding:15px 12px;border-radius:11px;cursor:pointer;transition:all .2s;border:1px solid transparent}
+.det-opt .dn{font-weight:700;font-size:17px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-dim);transition:color .2s}
+.det-opt .dd{font-size:10.5px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.det-opt:hover .dn{color:var(--ink)}
+.det-opt.on[data-det="sf"]{background:linear-gradient(135deg,rgba(70,184,240,.16),rgba(70,184,240,.05));border-color:var(--sky);box-shadow:0 0 28px -6px var(--sky-glow),inset 0 1px 0 rgba(255,255,255,.06)}
+.det-opt.on[data-det="sf"] .dn{color:var(--sky)}
+.det-opt.on[data-det="pb"]{background:linear-gradient(135deg,rgba(214,90,138,.16),rgba(214,90,138,.05));border-color:var(--chaos);box-shadow:0 0 28px -6px rgba(214,90,138,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.det-opt.on[data-det="pb"] .dn{color:var(--chaos)}
+
+.panel{background:var(--glass);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%);
+  border:1px solid var(--edge);border-radius:16px;box-shadow:0 18px 50px -22px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);}
+.section-label{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin:0 0 14px}
+
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:880px){.controls{grid-template-columns:1fr}}
+.ctl-group{padding:18px 18px 20px}
+.ctl-head{display:flex;align-items:center;gap:9px;margin-bottom:15px}
+.ctl-dot{width:9px;height:9px;border-radius:2px;transform:rotate(45deg);flex:none;background:var(--accent);box-shadow:0 0 12px var(--accent-glow);transition:all .3s}
+.ctl-title{font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.ctl-sub{font-size:11px;color:var(--ink-faint)}
+
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-radius:9px;cursor:pointer;transition:background .16s;user-select:none;border:1px solid transparent}
+.tog:hover{background:rgba(120,160,210,.06);border-color:var(--edge)}
+.tog .lbl{font-size:13px;color:var(--ink);font-weight:500}
+.tog .lbl small{display:block;font-size:10.5px;color:var(--ink-faint);font-weight:400}
+.switch{position:relative;width:40px;height:22px;border-radius:20px;background:rgba(120,140,170,.18);border:1px solid var(--edge-2);flex:none;transition:all .2s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--ink-dim);transition:all .2s}
+.tog.on .switch{background:linear-gradient(120deg,var(--accent),var(--accent));border-color:var(--accent);box-shadow:0 0 14px var(--accent-glow);filter:saturate(1.1)}
+.tog.on .switch::after{left:20px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.tog.on .lbl{color:#fff}
+
+.seg-wrap{padding:8px 10px 2px}
+.seg-lbl{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:7px}
+.seg-lbl small{color:var(--ink-faint);font-weight:400}
+.seg-cap{font-size:10.5px;color:var(--ink-faint);margin-top:6px;padding-left:2px}
+.seg{display:flex;gap:4px;background:rgba(10,14,20,.5);border:1px solid var(--edge);border-radius:9px;padding:3px}
+.seg button{flex:1;font-family:'Chakra Petch';font-weight:600;font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-dim);background:transparent;border:none;border-radius:6px;padding:7px 3px;cursor:pointer;transition:all .16s;white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button.active{background:linear-gradient(120deg,var(--accent),var(--accent));filter:saturate(1.1);color:#fff;box-shadow:0 0 12px var(--accent-glow)}
+
+.static-rule{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:9px;background:rgba(95,214,160,.05);border:1px solid rgba(95,214,160,.16);margin-bottom:12px}
+.static-rule .lbl{font-size:12.5px;font-weight:500} .static-rule .lbl b{color:var(--ink)} .static-rule .lbl small{display:block;font-size:10.5px;color:var(--ink-faint);font-weight:400}
+.pill{font-size:9px;letter-spacing:.12em;font-weight:700;color:var(--best);background:rgba(95,214,160,.12);border:1px solid rgba(95,214,160,.3);padding:3px 7px;border-radius:5px;flex:none}
+.verify{color:var(--warn)}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tab{position:relative;flex:1;min-width:140px;padding:14px 16px;border-radius:13px;cursor:pointer;background:var(--glass-2);border:1px solid var(--edge);transition:all .18s;overflow:hidden}
+.tab:hover{border-color:var(--edge-2);box-shadow:0 0 22px -6px var(--accent-glow);transform:translateY(-1px)}
+.tab.active{border-color:var(--accent);box-shadow:0 0 26px -4px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,.06);background:rgba(30,42,56,.7)}
+.tab .t-name{font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase}
+.tab .t-stat{font-family:'Spline Sans Mono';font-size:11px;color:var(--ink-dim);margin-top:3px}
+.tab.active .t-name{color:var(--accent)}
+
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+@media(max-width:600px){.summary{grid-template-columns:1fr}}
+.scard{padding:19px 19px 17px;border-radius:14px;background:var(--glass);border:1px solid var(--edge);position:relative;transition:all .18s;overflow:hidden}
+.scard:hover{transform:translateY(-2px)}
+.scard .vchip{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:5px;display:inline-block;margin-bottom:9px}
+.scard.va .vchip{background:rgba(70,184,240,.14);color:var(--A);border:1px solid rgba(70,184,240,.3)}
+.scard.vb .vchip{background:rgba(232,162,60,.14);color:var(--B);border:1px solid rgba(232,162,60,.3)}
+.scard .ld{font-size:11px;color:var(--ink-faint);letter-spacing:.04em}
+.scard .big{font-family:'Spline Sans Mono';font-weight:700;font-size:40px;line-height:1;margin:7px 0 2px;color:#fff}
+.scard .unit{font-size:12px;color:var(--ink-dim)}
+.scard.winner{border-color:var(--best);box-shadow:0 0 30px -6px var(--best-glow),inset 0 1px 0 rgba(255,255,255,.06)}
+.scard.winner::after{content:"▲ HIGHER";position:absolute;top:15px;right:15px;font-size:9px;letter-spacing:.12em;color:var(--best);font-weight:700}
+.scard.winner .big{color:var(--best)}
+.scard .meter{height:4px;border-radius:3px;background:rgba(255,255,255,.07);margin-top:13px;overflow:hidden}
+.scard .meter i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),#8ee8be);transition:width .4s}
+
+.bd-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:880px){.bd-grid{grid-template-columns:1fr}}
+.bd{padding:16px 16px 10px}
+.bd-title{display:flex;align-items:baseline;gap:9px;margin-bottom:2px}
+.bd-title .v{font-weight:700;font-size:17px;letter-spacing:.05em;text-transform:uppercase}
+.bd .v.va{color:var(--A)} .bd .v.vb{color:var(--B)}
+.bd-title .vd{font-size:11px;color:var(--ink-faint)}
+.bd-hint{font-size:10.5px;color:var(--ink-faint);margin:2px 0 4px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;text-align:right;padding:7px 8px;border-bottom:1px solid var(--edge)}
+th.l{text-align:left}
+td{padding:9px 8px;font-size:13px;border-bottom:1px solid rgba(120,160,210,.07)}
+td.l{text-align:left;color:var(--ink-dim);font-weight:500}
+td.num{text-align:right;font-family:'Spline Sans Mono';font-weight:500;color:var(--ink)}
+.wbox{display:inline-block;width:15px;height:15px;border-radius:4px;border:1.5px solid var(--edge-2);margin-right:9px;vertical-align:-2px;cursor:pointer;transition:all .15s;position:relative}
+.wbox:hover{border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.wbox.on{background:linear-gradient(120deg,var(--accent),var(--accent));filter:saturate(1.1);border-color:var(--accent)}
+.wbox.on::after{content:"✓";position:absolute;top:-3px;left:1px;font-size:12px;color:#fff;font-weight:700}
+tr.woff td{opacity:.34} tr.woff td.l{text-decoration:line-through} tr.woff .wbox{opacity:1}
+tr.total td{border-top:1px solid var(--edge-2);border-bottom:none;padding-top:11px}
+tr.total td.l{color:#fff;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:12px}
+tr.total td.num{font-weight:700;font-size:16px;color:#fff}
+td .tag{font-family:'Chakra Petch';font-size:9px;font-weight:600;letter-spacing:.05em;color:var(--ink-faint);display:block;margin-top:1px}
+
+details.notes{margin-top:24px}
+details.notes summary{cursor:pointer;padding:16px 18px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim);font-weight:600;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary::before{content:"⊕ ";color:var(--accent)}
+details.notes[open] summary::before{content:"⊖ "}
+.notes-body{padding:4px 22px 22px;font-size:12.5px;color:var(--ink-dim);line-height:1.7}
+.notes-body b{color:var(--ink)} .notes-body code{font-family:'Spline Sans Mono';font-size:11.5px;background:rgba(70,184,240,.1);padding:1px 6px;border-radius:4px;color:var(--sky)}
+.notes-body ul{margin:8px 0 8px 4px;list-style:none} .notes-body li{padding:3px 0 3px 18px;position:relative}
+.notes-body li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.flag{color:var(--warn)}
+.foot{margin-top:30px;text-align:center;font-size:11px;color:var(--ink-faint);letter-spacing:.05em}
+</style>
+</head>
+<body class="det-sf">
+<div class="wrap">
+<header>
+  <div class="eyebrow">Daemon Engine · Damage Telemetry</div>
+  <h1>Defiler Damage Matrix</h1>
+  <p class="sub"><b>Version A</b> = ectoplasma + 2 excruciator + 2 Hades lascannon. <b>Version B</b> = Hades battle cannon + 2 heavy reaper + 2 excruciator. Pick a detachment, set your buffs, pick a target, and <b>tap any weapon to fire it or hold it back</b>. Infantry = models killed (overkill wasted); vehicles = wounds dealt. <span class="mel">Ranged only — no melee.</span></p>
+</header>
+
+<!-- DETACHMENT MASTER SWITCH -->
+<div class="det-switch" id="detSwitch">
+  <div class="det-opt" data-det="sf"><div class="dn">Soulforged Warpack</div><div class="dd">+1 wound · blue</div></div>
+  <div class="det-opt" data-det="pb"><div class="dn">Pactbound Zealots</div><div class="dd">crit on 5+ · pink</div></div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="panel ctl-group">
+    <div class="ctl-head"><span class="ctl-dot"></span><div><div class="ctl-title">Model State</div><div class="ctl-sub">Defiler condition</div></div></div>
+    <div class="tog" data-t="bracketed"><div class="lbl">Bracketed <small>−1 to hit (1–6 W left)</small></div><div class="switch"></div></div>
+    <div class="seg-wrap">
+      <div class="seg-lbl">Re-roll wounds <small>— Defiler ability</small></div>
+      <div class="seg" data-seg="woundRR"><button data-v="none">None</button><button data-v="one">Ones</button><button data-v="all">All</button></div>
+      <div class="seg-cap"><b style="color:var(--ink-dim)">All</b> = your once-per-game full re-roll; drop to <b style="color:var(--ink-dim)">Ones</b> after spending it.</div>
+    </div>
+  </div>
+
+  <div class="panel ctl-group">
+    <div class="ctl-head"><span class="ctl-dot"></span><div><div class="ctl-title">Buffs</div><div class="ctl-sub">abilities &amp; enhancements</div></div></div>
+    <div class="tog" data-t="warp"><div class="lbl">Warpsmith <small>+1 to hit</small></div><div class="switch"></div></div>
+    <div class="tog" data-t="rrh"><div class="lbl">Re-roll hits <small id="rrhSrc">Tempting Addendum / Abaddon</small></div><div class="switch"></div></div>
+    <div class="seg-wrap">
+      <div class="seg-lbl">Pact <small>— Sustained / Lethal</small></div>
+      <div class="seg" data-seg="pact"><button data-v="off">Off</button><button data-v="sus">Sus</button><button data-v="leth">Leth</button><button data-v="both">Both</button></div>
+      <div class="seg-cap"><b style="color:var(--ink-dim)">Both</b> = Hellbrutes. Pactbound's crit-on-5 boosts these triggers.</div>
+    </div>
+  </div>
+
+  <div class="panel ctl-group">
+    <div class="ctl-head"><span class="ctl-dot"></span><div><div class="ctl-title">Rule &amp; Stratagem</div><div class="ctl-sub" id="detName">Soulforged Warpack</div></div></div>
+    <div id="ruleBadge"></div>
+    <div class="seg-wrap">
+      <div class="seg-lbl">Stratagem <small>— one per phase</small></div>
+      <div class="seg" id="stratSeg"></div>
+      <div class="seg-cap" id="stratCap"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="section-label">All-guns output · <span id="curDet"></span> · <span id="tgt-name"></span></div>
+<div class="summary" id="summary"></div>
+<div class="bd-grid" id="breakdown"></div>
+
+<details class="notes panel">
+  <summary>Modelling &amp; assumptions — read before trusting a number</summary>
+  <div class="notes-body">
+    <ul>
+      <li><b>Ranged only.</b> No shearing claws / electroscourge.</li>
+      <li><b>Detachment rule is baked in</b> per side: Soulforged = <code>+1 wound</code>, Pactbound = <code>crit on 5+</code> (sus/lethal). Toggle the master switch up top to compare.</li>
+      <li><b>One stratagem per unit per phase (11e)</b> — that's why Stratagem is single-select, not stacking toggles.</li>
+      <li><b>Stratagems (audited from the 10e CSM codex):</b> the only ranged-damage strat usable here is <code>Desperate Pledge</code> (SF, +1 AP). Pactbound's Profane Zeal (re-roll wounds) needs the Chaos Undivided mark, incompatible with the crit-on-5 (Tzeentch/Nurgle) build you run, so it's excluded. All other strats in both detachments are melee / healing / movement / defensive. <span class="flag">11e may have errata'd some — verify.</span></li>
+      <li><b>Enhancements (audited from source):</b> only Soulforged's <code>Tempting Addendum</code> raises the Defiler's shooting (re-roll Hits — it's the "Re-roll hits" toggle). No other enhancement in either detachment touches ranged output (rest are CP / defense / movement / melee).</li>
+      <li><b>Pact</b> = Off / Sustained / Lethal / Both (Hellbrutes). Crit-on-5 feeds Sustained &amp; Lethal triggers; Devastating crit-<i>wound</i> kept at 6.</li>
+      <li><b>Devastating Wounds (reaper) = mortal wounds = Damage</b>, bypassing all saves (max one model/crit).</li>
+      <li><b>Sustained does NOT stack</b> — reaper's native Sustained 1 + Sustained pact = 1. <span class="flag">Override if your FAQ differs.</span></li>
+      <li><b>Lethal optional per attack</b> (auto-picked vs keeping Devastating). <b>Blast</b> = +2 attacks vs 10-model infantry, none vs vehicles.</li>
+      <li><b>Overkill</b> wasted on infantry (carry within a model, killing-blow overkill lost), capped at 10. <b>Vehicles</b> = raw expected wounds; ONE-ROUNDS at ≥ model W.</li>
+    </ul>
+  </div>
+</details>
+
+<div class="foot">Defiler T11 · W18 · 3+/5++ · BS3+ · live recompute on every change</div>
+</div>
+
+<script>
+const LOADOUTS = {
+  A:{desc:'ecto · 2 excr · 2 las', weapons:[
+    {name:'Ectoplasma destructor', baseA:3.5, blast:true,  S:12, ap:-3, avgD:3, flatD:3},
+    {name:'Excruciator cannon ×2', baseA:12,  blast:false, S:6,  ap:-1, avgD:2, flatD:2},
+    {name:'Hades lascannon ×2',    baseA:4,   blast:false, S:12, ap:-3, avgD:4.5, variable:true}]},
+  B:{desc:'battle · 2 reaper · 2 excr', weapons:[
+    {name:'Hades battle cannon',   baseA:6.5, blast:true,  S:10, ap:-1, avgD:3, flatD:3},
+    {name:'Heavy reaper ×2',       baseA:8,   blast:false, S:9,  ap:-1, avgD:3, flatD:3, dev:true, natSus:1},
+    {name:'Excruciator cannon ×2', baseA:12,  blast:false, S:6,  ap:-1, avgD:2, flatD:2}]},
+};
+const TARGETS = [
+  {key:'marines', name:'Marines',     T:4,  save:3, inv:null, W:2,  models:10, type:'inf', stat:'T4 · 3+ · W2 · ×10'},
+  {key:'terms',   name:'Terminators', T:5,  save:2, inv:4,    W:3,  models:10, type:'inf', stat:'T5 · 2+/4++ · W3 · ×10'},
+  {key:'veh',     name:'Vehicle',     T:11, save:3, inv:5,    W:14, models:1,  type:'veh', stat:'T11 · 3+/5++ · W14'},
+  {key:'tank',    name:'Heavy Tank',  T:12, save:2, inv:4,    W:20, models:1,  type:'veh', stat:'T12 · 2+/4++ · W20'},
+];
+const DET = {
+  sf:{name:'Soulforged Warpack', rule:'+1 to wound (Debt to the Soul Forge)',
+      strats:[{v:'none',l:'None'},{v:'pledge',l:'Desperate Pledge'}],
+      cap:'<b style="color:var(--ink-dim)">Desperate Pledge</b> (1CP) — improves AP by 1 while invoking the contract. The only Soulforged strat that touches ranged damage.',
+      rrh:'Tempting Addendum / Abaddon'},
+  pb:{name:'Pactbound Zealots', rule:'crit on 5+ ranged (Tzeentch/Nurgle mark)',
+      strats:[{v:'none',l:'None'}],
+      cap:'No ranged-damage stratagem fits a crit-on-5 build. (Profane Zeal / re-roll wounds needs the Chaos Undivided mark, which you don\'t run.)',
+      rrh:'Abaddon'},
+};
+
+const S = {det:'sf', target:'marines', bracketed:false, woundRR:'one', warp:true, rrh:false, pact:'sus', strat:'none', wpn:{A:[true,true,true],B:[true,true,true]}};
+
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+function woundNeed(Sx,T){ if(Sx>=2*T)return 2; if(Sx>T)return 3; if(Sx===T)return 4; if(Sx*2<=T)return 6; return 5; }
+
+function calcWeapon(w, tgt, o){
+  let A = w.baseA + (w.blast ? Math.floor(tgt.models/5) : 0);
+  const netHit = clamp((o.warp?1:0)+(o.bracketed?-1:0),-1,1);
+  const need = clamp(3-netHit,2,6);
+  let pHit=(7-need)/6;
+  const critThr=o.crit5?5:6;
+  let pCrit=Math.min((7-critThr)/6,pHit);
+  if(o.rrh){const pf=1-pHit;pHit+=pf*pHit;pCrit+=pf*pCrit;}
+  const critHits=A*pCrit, normHits=A*pHit-critHits;
+  const netW=clamp((o.plus1w?1:0),-1,1);
+  const wneed=clamp(woundNeed(w.S,tgt.T)-netW,2,6);
+  let pW=(7-wneed)/6, pCW=1/6;
+  if(o.woundRR==='one'){pW+=(1/6)*pW;pCW+=(1/6)*pCW;} else if(o.woundRR==='all'){const pf=1-pW;pW+=pf*pW;pCW+=pf*pCW;}
+  pW=Math.min(pW,1);pCW=Math.min(pCW,pW);
+  const ap=w.ap-(o.plus1ap?1:0);
+  let best=tgt.inv?Math.min(tgt.save-ap,tgt.inv):tgt.save-ap; best=Math.max(best,2);
+  const pSave=best<=6?(7-best)/6:0, pFail=1-pSave;
+  const dev=!!w.dev;
+  const normalW=dev?(pW-pCW):pW, critW=dev?pCW:0, ED=w.avgD;
+  const susX=Math.max(w.natSus||0,o.pactSus?1:0), lethal=!!o.pactLeth;
+  let su=0,mo=0; const rollers=normHits+critHits*susX;
+  su+=rollers*normalW*pFail; mo+=rollers*critW;
+  const rollDmg=normalW*pFail*ED+critW*ED, lethalDmg=pFail*ED;
+  if(lethal&&lethalDmg>rollDmg){su+=critHits*pFail;} else {su+=critHits*normalW*pFail;mo+=critHits*critW;}
+  const dmg=(su+mo)*ED;
+  let kills=0;
+  if(tgt.type==='inf'){
+    const Dk=w.variable?Math.round(w.avgD):w.flatD;
+    const ppk=Math.max(1,Math.ceil(tgt.W/Dk));
+    kills=su/ppk + ((w.flatD&&w.flatD>=tgt.W)?mo:mo*Math.min(1,(w.flatD||ED)/tgt.W));
+  }
+  return {dmg,kills};
+}
+function pactState(){return{sus:(S.pact==='sus'||S.pact==='both'),leth:(S.pact==='leth'||S.pact==='both')};}
+function opts(){const p=pactState();
+  return{warp:S.warp,bracketed:S.bracketed,rrh:S.rrh,woundRR:S.woundRR,
+  plus1w:(S.det==='sf'), crit5:(S.det==='pb'),
+  plus1ap:(S.det==='sf'&&S.strat==='pledge'),
+  pactSus:p.sus,pactLeth:p.leth};}
+function scenario(ldKey,tgt){const ld=LOADOUTS[ldKey],o=opts();
+  const rows=ld.weapons.map((w,i)=>({on:S.wpn[ldKey][i],...calcWeapon(w,tgt,o)}));
+  return {rows,total:rows.reduce((a,r)=>a+(r.on?(tgt.type==='inf'?r.kills:r.dmg):0),0)};}
+
+const fmt=v=>v.toFixed(1);
+function metricCell(val,tgt){
+  if(tgt.type==='inf'){const c=Math.min(val,tgt.models);return `${fmt(c)}${val>tgt.models+0.05?'<span class="tag">+ overkill</span>':''}`;}
+  return `${fmt(val)}${val>=tgt.W?'<span class="tag" style="color:var(--best)">ONE-ROUNDS</span>':''}`;
+}
+function render(){
+  const d=DET[S.det], tgt=TARGETS.find(t=>t.key===S.target);
+  document.body.className='det-'+S.det;
+  document.getElementById('curDet').textContent=d.name;
+  document.getElementById('detName').textContent=d.name;
+  document.getElementById('rrhSrc').textContent=d.rrh;
+  document.getElementById('tgt-name').textContent=tgt.name+' ('+tgt.stat+')';
+  document.getElementById('ruleBadge').innerHTML=`<div class="static-rule"><div class="lbl"><b>Detachment rule</b><small>${d.rule}</small></div><span class="pill">ALWAYS ON</span></div>`;
+  document.getElementById('stratSeg').innerHTML=d.strats.map(s=>`<button data-strat="${s.v}" class="${S.strat===s.v?'active':''}">${s.l}</button>`).join('');
+  document.getElementById('stratCap').innerHTML=d.cap;
+  document.querySelectorAll('.det-opt').forEach(o=>o.classList.toggle('on',o.dataset.det===S.det));
+  document.getElementById('tabs').innerHTML=TARGETS.map(t=>`<div class="tab ${t.key===S.target?'active':''}" data-tab="${t.key}"><div class="t-name">${t.name}</div><div class="t-stat">${t.stat}</div></div>`).join('');
+
+  const A=scenario('A',tgt), B=scenario('B',tgt);
+  const maxT=Math.max(A.total,B.total), unit=tgt.type==='inf'?'models killed / 10':'wounds dealt';
+  const card=(cls,ld,sc)=>{const win=Math.abs(sc.total-maxT)<0.001&&maxT>0;const disp=tgt.type==='inf'?Math.min(sc.total,tgt.models):sc.total;
+    return `<div class="scard ${cls} ${win?'winner':''}"><span class="vchip">Version ${ld}</span><div class="ld">${LOADOUTS[ld].desc}</div>
+      <div class="big">${fmt(disp)}</div><div class="unit">${unit}${tgt.type==='inf'&&sc.total>tgt.models+0.05?' · overkill':''}</div>
+      <div class="meter"><i style="width:${maxT>0?Math.min(100,sc.total/maxT*100):0}%"></i></div></div>`;};
+  document.getElementById('summary').innerHTML=card('va','A',A)+card('vb','B',B);
+
+  const bd=(ldKey,sc)=>{const ld=LOADOUTS[ldKey];let rows='';
+    for(let i=0;i<ld.weapons.length;i++){const on=S.wpn[ldKey][i];const v=tgt.type==='inf'?sc.rows[i].kills:sc.rows[i].dmg;
+      rows+=`<tr class="${on?'':'woff'}"><td class="l"><span class="wbox ${on?'on':''}" data-wpn="${ldKey}" data-i="${i}"></span>${ld.weapons[i].name}</td><td class="num">${metricCell(v,tgt)}</td></tr>`;}
+    rows+=`<tr class="total"><td class="l">All firing guns</td><td class="num">${metricCell(sc.total,tgt)}</td></tr>`;
+    return `<div class="panel bd"><div class="bd-title"><span class="v v${ldKey.toLowerCase()}">Version ${ldKey}</span><span class="vd">${ld.desc}</span></div>
+      <div class="bd-hint">tap a weapon to fire it or hold it back</div>
+      <table><thead><tr><th class="l">Weapon set</th><th>${tgt.type==='inf'?'Models killed':'Wounds'}</th></tr></thead><tbody>${rows}</tbody></table></div>`;};
+  document.getElementById('breakdown').innerHTML=bd('A',A)+bd('B',B);
+
+  document.querySelectorAll('.tog').forEach(el=>el.classList.toggle('on',!!S[el.dataset.t]));
+  document.querySelectorAll('.seg[data-seg="woundRR"] button').forEach(b=>b.classList.toggle('active',b.dataset.v===S.woundRR));
+  document.querySelectorAll('.seg[data-seg="pact"] button').forEach(b=>b.classList.toggle('active',b.dataset.v===S.pact));
+}
+document.addEventListener('click',e=>{
+  const det=e.target.closest('.det-opt'); if(det){S.det=det.dataset.det;S.strat='none';render();return;}
+  const wb=e.target.closest('.wbox'); if(wb){S.wpn[wb.dataset.wpn][+wb.dataset.i]=!S.wpn[wb.dataset.wpn][+wb.dataset.i];render();return;}
+  const st=e.target.closest('#stratSeg button'); if(st){S.strat=st.dataset.strat;render();return;}
+  const tog=e.target.closest('.tog'); if(tog){S[tog.dataset.t]=!S[tog.dataset.t];render();return;}
+  const sw=e.target.closest('.seg[data-seg="woundRR"] button'); if(sw){S.woundRR=sw.dataset.v;render();return;}
+  const sp=e.target.closest('.seg[data-seg="pact"] button'); if(sp){S.pact=sp.dataset.v;render();return;}
+  const tab=e.target.closest('.tab'); if(tab){S.target=tab.dataset.tab;render();return;}
+});
+render();
+</script>
+</body>
+</html>

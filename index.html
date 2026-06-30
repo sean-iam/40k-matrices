@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathhammer Matrices · 40k Damage Comparisons</title>
+<meta name="description" content="Interactive Warhammer 40,000 damage comparison tools — toggle buffs, stratagems and targets to see what really dies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c11; --ink:#e8edf4; --ink-dim:#8b97a8; --ink-faint:#5a6575;
+  --glass:rgba(20,26,35,0.6); --edge:rgba(120,160,210,0.14); --edge-2:rgba(120,160,210,0.3);
+  --sky:#46b8f0; --sky-glow:rgba(70,184,240,0.45); --green:#54d6a0; --chaos:#d65a8a; --amber:#e8a23c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Chakra Petch',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;
+  background-image:
+    radial-gradient(900px 600px at 12% -5%, rgba(70,184,240,0.10), transparent 60%),
+    radial-gradient(800px 700px at 92% 0%, rgba(214,90,138,0.09), transparent 55%),
+    radial-gradient(1000px 900px at 50% 115%, rgba(84,214,160,0.07), transparent 60%);
+  background-attachment:fixed;}
+.wrap{max-width:1000px;margin:0 auto;padding:60px 22px 90px}
+.eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--sky);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:40px;height:1px;background:linear-gradient(90deg,var(--sky),transparent)}
+h1{font-size:clamp(34px,6vw,60px);font-weight:700;letter-spacing:.01em;line-height:1;text-transform:uppercase}
+h1 .x{color:var(--ink-dim);font-weight:400}
+.lede{color:var(--ink-dim);font-size:15px;margin-top:14px;max-width:620px}
+.lede b{color:var(--ink);font-weight:600}
+.count{font-family:'Spline Sans Mono';font-size:12px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin:38px 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+a.card{display:block;text-decoration:none;color:inherit;position:relative;padding:24px 24px 22px;border-radius:18px;
+  background:var(--glass);backdrop-filter:blur(16px) saturate(120%);-webkit-backdrop-filter:blur(16px) saturate(120%);
+  border:1px solid var(--edge);box-shadow:0 18px 50px -24px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04);
+  transition:transform .2s, border-color .2s, box-shadow .2s;overflow:hidden}
+a.card::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .25s;
+  background:radial-gradient(420px 200px at 50% -10%, var(--cardglow,var(--sky-glow)), transparent 70%)}
+a.card:hover{transform:translateY(-4px);border-color:var(--edge-2);box-shadow:0 26px 60px -22px rgba(0,0,0,.9), 0 0 30px -8px var(--cardglow,var(--sky-glow))}
+a.card:hover::before{opacity:.5}
+.tagrow{display:flex;gap:7px;margin-bottom:14px;position:relative}
+.tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:4px 9px;border-radius:6px}
+.tag.t-shoot{background:rgba(70,184,240,.14);color:var(--sky);border:1px solid rgba(70,184,240,.3)}
+.tag.t-melee{background:rgba(84,214,160,.14);color:var(--green);border:1px solid rgba(84,214,160,.3)}
+.tag.t-faction{background:rgba(214,90,138,.12);color:var(--chaos);border:1px solid rgba(214,90,138,.28)}
+.card h2{font-size:23px;font-weight:700;letter-spacing:.01em;position:relative;text-transform:uppercase;line-height:1.05}
+.card .matchup{font-family:'Spline Sans Mono';font-size:12.5px;color:var(--ink);margin-top:7px;position:relative}
+.card p{font-size:13px;color:var(--ink-dim);margin-top:10px;position:relative}
+.card .open{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--sky);margin-top:16px;position:relative;display:inline-flex;align-items:center;gap:6px}
+a.card:hover .open{gap:11px}
+.how{margin-top:42px;padding:20px 22px;border-radius:16px;background:rgba(20,26,35,0.4);border:1px solid var(--edge);font-size:13px;color:var(--ink-dim);line-height:1.7}
+.how b{color:var(--ink)}
+.foot{margin-top:34px;font-size:11px;color:var(--ink-faint);letter-spacing:.05em;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Mathhammer · 10th/11th ed</div>
+  <h1>Damage <span class="x">/</span> Matrices</h1>
+  <p class="lede">Interactive Warhammer 40,000 damage comparisons. Each tool pits <b>two builds</b> against the same four targets — flip buffs, stratagems, marks and weapons and watch what actually dies. Numbers are expected values; assumptions are listed in each tool.</p>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="how">
+    <b>How to read them.</b> Pick a target tab (Marines / Terminators / Vehicle / Heavy Tank). Infantry shows <b>models killed</b> (overkill wasted); vehicles show <b>wounds dealt</b>, flagging when a build one-rounds it. Toggle any buff to recompute instantly. Open the “Modelling &amp; assumptions” note at the bottom of each tool to see exactly how it's calculated.
+  </div>
+  <div class="foot">Built with Claude Code · expected-value math · not affiliated with Games Workshop</div>
+</div>
+
+<script>
+// Eval registry — add an entry here when a new matrix ships.
+const EVALS = [
+  { file:'defiler-damage-matrix.html', name:'Defiler', glow:'rgba(70,184,240,0.45)',
+    tags:[['t-shoot','Shooting'],['t-faction','Chaos Space Marines']],
+    matchup:'Loadout A vs B · Soulforged Warpack vs Pactbound Zealots',
+    desc:'Two gun loadouts across two detachments — pact, crit-on-5, +1 wound, +1 AP, re-rolls, all toggleable.' },
+  { file:'incubi-damage-matrix.html', name:'Incubi', glow:'rgba(84,214,160,0.45)',
+    tags:[['t-melee','Melee'],['t-faction','Drukhari']],
+    matchup:'10 Incubi + Archon vs 5 Incubi + Lady Malys · Skysplinter Assault',
+    desc:'Power From Pain Empower, Tormentors, Lance and leader weapons — which brick deletes what.' },
+];
+document.getElementById('count').textContent = EVALS.length + ' comparison' + (EVALS.length>1?'s':'') + ' available';
+document.getElementById('grid').innerHTML = EVALS.map(e=>`
+  <a class="card" href="${e.file}" style="--cardglow:${e.glow}">
+    <div class="tagrow">${e.tags.map(t=>`<span class="tag ${t[0]}">${t[1]}</span>`).join('')}</div>
+    <h2>${e.name}</h2>
+    <div class="matchup">${e.matchup}</div>
+    <p>${e.desc}</p>
+    <span class="open">Open tool →</span>
+  </a>`).join('');
+</script>
+</body>
+</html>
